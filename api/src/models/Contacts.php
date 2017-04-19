@@ -67,13 +67,13 @@ class Contacts extends Crud
      * @param $search
      * @return mixed
      */
-    public static function search($search, $page) {
+    public static function search($search, $page, $limit = 20, $fields = "") {
         $search = strtolower(iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $search));
         $pdo = \DB\connectDB::getPDO();
 
         $res = array();
         // combien je veux de fiches par page
-        $limit = 20;
+        // $limit = (isset($limit) ? 20 : $limit);
 
         // récupère la page en cours
         if (!$page) {
@@ -82,8 +82,9 @@ class Contacts extends Crud
 
         // construit la requête
         try {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS";
-            $sql .= " * "; //id, firstname, lastname, title
+            $sql = "SELECT SQL_CALC_FOUND_ROWS ";
+            // $sql .= " * "; //id, firstname, lastname, title
+            $sql .= " id, firstname, lastname, title ";
             $sql .= " FROM contacts ";
             if (!empty($search)) {
                 $sql .= " WHERE MATCH(firstname,lastname) AGAINST (:search IN BOOLEAN MODE) ";

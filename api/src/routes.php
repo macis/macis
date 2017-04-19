@@ -9,35 +9,29 @@
 //    return $this->renderer->render($response, 'index.phtml', $args);
 //});
 
+$app->get('/hello/{name}', function ($request, $response) {
+    $name = $request->getAttribute('name');
+    $response->getBody()->write("Hello, $name");
+
+    return $response;
+});
 
 // Clients
 $app->group('/clients', function () {
-
-    $this->any('', function ($request, $response, $args) {
-        return $response->withStatus(302)->withHeader('Location', '/patients/recherche');
-    });
-
-    $this->group('/recherche', function () {
-        $this->post('', function ($request, $response, $args) {
-            $search = $request->getParsedBody()['search'];
-            if (!empty($search)) {
-                return $response->withStatus(302)->withHeader('Location', '/patients/recherche/' . $search);
-            } else {
-                return $response->withStatus(302)->withHeader('Location', '/patients/recherche');
-            }
-        });
-        $this->get('[/{search}[/{page}]]', function ($request, $response, $args) {
-            $json = \macis\classes\contact::search($this, $request, $args);
-            echo json_encode($json, JSON_PRETTY_PRINT);
-        });
-
+    $this->get('[/{page:[0-9]+}[/{search}]]', function ($request, $response, $args) {
+        $page = $request->getAttribute('page');
+        $page = (empty($page)) ? 0 : (int)$page;
+        $search = $request->getAttribute('search');
+        $json = \macis\classes\clients::search($page, $search);
+        echo json_encode($json, JSON_PRETTY_PRINT);
     });
 });
 
 $app->group('/client', function () {
     // Fiche patient
-    $this->get('/{id}', function ($request, $response, $args) {
-        $result = \macis\classes\contact::get($this, $request, $args);
-        return json_encode($result);
+    $this->get('/{id:[0-9]+}', function ($request, $response, $args) {
+        $id = $request->getAttribute('id');
+        $json = \macis\classes\clients::get($id);
+        echo json_encode($json, JSON_PRETTY_PRINT);
     });
 });
