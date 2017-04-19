@@ -1,0 +1,3 @@
+macis_dashboard_homepage:
+    path:     /
+    defaults: { _controller: MacisDashboardBundle:Default:index }

@@ -1,0 +1,13 @@
+macis_client_homepage:
+    path:     /
+    defaults:
+        _controller: MacisClientBundle:Default:index
+        page:        1
+    requirements:
+        page: \d*
+
+macis_client_file:
+    path:     /file/{id}
+    defaults: { _controller: MacisClientBundle:Default:file }
+    requirements:
+        id: \d+

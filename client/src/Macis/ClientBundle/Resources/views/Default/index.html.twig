@@ -1,0 +1,36 @@
+{% extends 'dashboard.html.twig' %}
+
+
+{% block sidebar %}
+    <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+            <a class="nav-link" href="#">Overview</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Reports</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Analytics</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#">Export</a>
+        </li>
+    </ul>
+{% endblock %}
+
+{% block content %}
+
+    <section class="row text-center placeholders">
+
+        {% for i in 0..100 %}
+            <div class="col-6 col-sm-3 placeholder">
+                <a href="{{ path("macis_client_file", {'id': i}) }}"><img src="data:image/gif;base64,R0lGODlhAQABAIABAAJ12AAAACwAAAAAAQABAAACAkQBADs=" width="50" height="50" class="img-fluid rounded-circle" alt="Generic placeholder thumbnail"></a>
+                <h4>Label {{ i }}</h4>
+                <div class="text-muted">Something else</div>
+            </div>
+        {% endfor %}
+
+    </section>
+
+
+{% endblock %}

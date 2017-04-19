@@ -1,0 +1,15 @@
+macis_settings:
+    resource: "@MacisSettingsBundle/Resources/config/routing.yml"
+    prefix:   /settings
+
+macis_client:
+    resource: "@MacisClientBundle/Resources/config/routing.yml"
+    prefix:   /client
+
+macis_dashboard:
+    resource: "@MacisDashboardBundle/Resources/config/routing.yml"
+    prefix:   /
+
+macis_calendar:
+    resource: "@MacisCalendarBundle/Resources/config/routing.yml"
+    prefix:   /calendar

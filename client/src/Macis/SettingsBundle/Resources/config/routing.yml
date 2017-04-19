@@ -1,0 +1,3 @@
+macis_settings_homepage:
+    path:     /
+    defaults: { _controller: MacisSettingsBundle:Default:index }

@@ -1,0 +1,22 @@
+{
+  "name": "demo",
+  "authors": [
+    "Wilfried Jeanniard <wilfried@willou.com>"
+  ],
+  "description": "",
+  "main": "",
+  "license": "MIT",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "web/bower",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "bootstrap": "^v4.0.0"
+  }
+}

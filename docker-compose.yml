@@ -1,0 +1,63 @@
+version: '2'
+services:
+  api:
+    build:
+      context: api
+      dockerfile: Dockerfile
+    ports:
+      - 8080:80
+    restart: always
+    env_file: leaf.env
+    depends_on:
+      - db
+    volumes:
+      - ./api/:/var/www/html/
+
+#  client:
+#    build:
+#      context: client
+#      dockerfile: Dockerfile
+#    ports:
+#      - 8000:80
+#    restart: always
+#    env_file: leaf.env
+#    depends_on:
+#      - db
+#    volumes:
+#      - ./client/:/var/www/html/
+
+#  demo:
+#    build:
+#      context: demo
+#      dockerfile: Dockerfile
+#    ports:
+#      - 8090:80
+#    restart: always
+#    env_file: leaf.env
+#    depends_on:
+#      - db
+#    volumes:
+#      - ./demo/:/var/www/html/
+
+  db:
+    image: percona
+    ports:
+      - 3306:3306
+    env_file: leaf.env
+    environment:
+      - MYSQL_ROOT_PASSWORD=tropsecret
+    restart: always
+    volumes:
+      - database:/var/lib/mysql
+
+#  dbadmin:
+#    image: clue/adminer
+#    ports:
+#      - 8033:80
+#    depends_on:
+#      - db
+
+
+volumes:
+  database:
+
