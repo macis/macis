@@ -11,19 +11,39 @@ namespace macis\classes;
 class clients
 {
 
+    /**
+     * @param $page
+     * @param $search
+     * @return mixed
+     *
+     */
     public static function search($page, $search)
     {
-        $res = \Models\Contacts::search($search, $page);
+        //  $fields = array ('id','firstname');
+        $res = \Models\Contacts::search($search, $page, 100, $fields);
         return $res;
     }
 
-
+    /**
+     * @param $id
+     * @return mixed
+     */
     public static function get($id)
     {
         $res = \Models\Contacts::getById($id);
         return $res;
     }
 
+    /**
+     * @param $id
+     * @param $values
+     * @return mixed
+     */
+    public static function put($id, $values)
+    {
+        $res = \Models\Contacts::put($id, $values);
+        return $res;
+    }
 
 
 

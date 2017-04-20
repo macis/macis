@@ -28,10 +28,20 @@ $app->group('/clients', function () {
 });
 
 $app->group('/client', function () {
-    // Fiche patient
+    // Fiche client
     $this->get('/{id:[0-9]+}', function ($request, $response, $args) {
         $id = $request->getAttribute('id');
         $json = \macis\classes\clients::get($id);
+        echo json_encode($json, JSON_PRETTY_PRINT);
+    });
+    // Update client
+    $this->put('/{id:[0-9]+}', function ($request, $response, $args) {
+        $id = $request->getAttribute('id');
+        $values = $request->getBody();
+        $values = json_decode($values, true);
+        // print_r($values);
+//        die();
+        $json = \macis\classes\clients::put($id, $values);
         echo json_encode($json, JSON_PRETTY_PRINT);
     });
 });

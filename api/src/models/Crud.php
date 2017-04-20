@@ -87,9 +87,13 @@ abstract class Crud
             }
         }
 
-        $sql = "UPDATE `".static::$tablename."` SET ".implode(',',$ins)." ".static::$sql_ownerid." ".static::$sql_update_special." where ".static::$idfield." = :id ;";
+        /*".static::$sql_ownerid."*/
+        $sql = "UPDATE `".static::$tablename."` SET ".implode(',',$ins)." ".static::$sql_update_special." where ".static::$idfield." = :id ;";
 
-        // error_log(print_r($sql, true));
+//        print_r($sql);
+//        print_r($id);
+//        print_r($values);
+//        print_r($ins);
 
         if (!count($ins)) {
             return false;
@@ -101,13 +105,16 @@ abstract class Crud
             $sth = $pdo->prepare($sql);
             foreach ($ins as $f => $k) {
                 $sth->bindValue(":".$f, $values[$f], self::guessType($values[$f]));
+//                echo $f . " ->" .$values[$f];
             }
             $sth->bindValue(":id", $id, self::guessType($id));
             // $sth->bindValue(":id_user", \singletons\Me::getInstance()->user["id"], self::guessType(\singletons\Me::getInstance()->user["id"]));
             $sth->execute();
-            $count =$sth->rowCount();
+            $count = $sth->rowCount();
             if ($count >= 1) {
                 return true;
+            } else {
+                return false;
             }
         } catch (\PDOException $e) {
             // error_log(print_r($e, true));
