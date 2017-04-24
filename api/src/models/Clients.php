@@ -9,7 +9,7 @@
 namespace Models;
 
 
-class Contacts extends Crud
+class Clients extends Crud
 {
 
     static $tablename = "contacts";
