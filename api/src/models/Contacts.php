@@ -14,7 +14,7 @@ class Contacts extends Crud
 
     static $tablename = "contacts";
     static $idfield = "id";
-    static $deletedfield = "";
+    static $deletedfield = "deleted";
     static $fields = array(
         'id',
         'social_number',
@@ -67,33 +67,46 @@ class Contacts extends Crud
      * @param $search
      * @return mixed
      */
-    public static function search($search, $page) {
+    public static function search($search, $page, $limit = 20, $fields = "") {
         $search = strtolower(iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $search));
         $pdo = \DB\connectDB::getPDO();
 
         $res = array();
         // combien je veux de fiches par page
-        $limit = 20;
+        $limit = (isset($limit) ? 20 : $limit);
 
         // récupère la page en cours
         if (!$page) {
             $page = 0;
         }
 
+        // récupère les champs
+        if (is_array($fields)) {
+            foreach ($fields as $field) {
+                if (in_array($field, self::$fields)) {
+                    $fields_valid[] = $field;
+                }
+            }
+            $fields = implode(" , ", $fields_valid);
+        } else {
+            $fields = " id, firstname, lastname, title ";
+        }
+
         // construit la requête
         try {
-            $sql = "SELECT SQL_CALC_FOUND_ROWS";
-            $sql .= " * "; //id, firstname, lastname, title
+            $sql = "SELECT SQL_CALC_FOUND_ROWS ";
+            // $sql .= " * "; //id, firstname, lastname, title
+            $sql .= $fields;
             $sql .= " FROM contacts ";
             if (!empty($search)) {
                 $sql .= " WHERE MATCH(firstname,lastname) AGAINST (:search IN BOOLEAN MODE) ";
             }
             $sql .= " ORDER BY lastname ";
-            $sql .= " LIMIT :page , :limit";
+            $sql .= " LIMIT :start , :limit";
             $sth = $pdo->prepare($sql);
 
-            $page = ($page == 1 ? $page : $page * $limit);
-            $sth->bindParam(':page', $page, \PDO::PARAM_INT);
+            $start = $page * $limit;
+            $sth->bindParam(':start', $start, \PDO::PARAM_INT);
             $sth->bindParam(':limit', $limit, \PDO::PARAM_INT);
             if (!empty($search)) {
                 $search = array_filter(explode(" ", $search));
@@ -125,5 +138,28 @@ class Contacts extends Crud
         return $res;
     }
 
+    /**
+     * @param $id
+     * @param $values
+     * @return mixed
+     */
+    public static function put($id, $values) {
+        $list = self::update($id, $values);
+        return $list;
+    }
 
+    /**
+     * @param $values
+     * @return bool|\Exception|\PDOException|string
+     */
+    public static function post($values) {
+        $id = self::insert($values);
+        return $id;
+    }
+
+    public static function delete($id) {
+        $values = array(self::$deletedfield => 'now()');
+        $list = self::update($id, $values);
+        return $list;
+    }
 }
