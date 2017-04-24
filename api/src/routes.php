@@ -39,9 +39,15 @@ $app->group('/client', function () {
         $id = $request->getAttribute('id');
         $values = $request->getBody();
         $values = json_decode($values, true);
-        // print_r($values);
-//        die();
         $json = \macis\classes\clients::put($id, $values);
         echo json_encode($json, JSON_PRETTY_PRINT);
     });
+    // Add client
+    $this->post('', function ($request, $response, $args) {
+        $values = $request->getBody();
+        $values = json_decode($values, true);
+        $json = \macis\classes\clients::post($values);
+        echo json_encode($json, JSON_PRETTY_PRINT);
+    });
+
 });

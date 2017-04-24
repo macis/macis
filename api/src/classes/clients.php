@@ -45,6 +45,14 @@ class clients
         return $res;
     }
 
-
+    /**
+     * @param $values
+     * @return bool|\Exception|\PDOException|string
+     */
+    public static function post($values)
+    {
+        $res = \Models\Contacts::post($values);
+        return $res;
+    }
 
 }

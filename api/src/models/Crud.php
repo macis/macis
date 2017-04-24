@@ -49,8 +49,8 @@ abstract class Crud
             }
         }
 
-
-        $sql = "INSERT INTO `".static::$tablename."` SET ".implode(',',$ins)." ".static::$sql_ownerid." ".static::$sql_insert_special.";";
+        // ".static::$sql_ownerid."
+        $sql = "INSERT INTO `".static::$tablename."` SET ".implode(',',$ins)."  ".static::$sql_insert_special.";";
 
         if (!count($ins)) {
             return false;

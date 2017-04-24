@@ -147,4 +147,13 @@ class Contacts extends Crud
         $list = self::update($id, $values);
         return $list;
     }
+
+    /**
+     * @param $values
+     * @return bool|\Exception|\PDOException|string
+     */
+    public static function post($values) {
+        $id = self::insert($values);
+        return $id;
+    }
 }
