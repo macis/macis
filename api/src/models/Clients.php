@@ -9,10 +9,10 @@
 namespace Models;
 
 
-class Contacts extends Crud
+class Clients extends Crud
 {
 
-    static $tablename = "contacts";
+    static $tablename = "clients";
     static $idfield = "id";
     static $deletedfield = "deleted";
     static $fields = array(
@@ -157,6 +157,10 @@ class Contacts extends Crud
         return $id;
     }
 
+    /**
+     * @param $id
+     * @return bool|\Exception|\PDOException
+     */
     public static function delete($id) {
         $values = array(self::$deletedfield => 'now()');
         $list = self::update($id, $values);

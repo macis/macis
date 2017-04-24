@@ -19,8 +19,8 @@ class clients
      */
     public static function search($page, $search)
     {
-        //  $fields = array ('id','firstname');
-        $res = \Models\Contacts::search($search, $page, 100, $fields);
+        $fields = "";
+        $res = \Models\Clients::search($search, $page, 100, $fields);
         return $res;
     }
 
@@ -30,7 +30,7 @@ class clients
      */
     public static function get($id)
     {
-        $res = \Models\Contacts::getById($id);
+        $res = \Models\Clients::getById($id);
         return $res;
     }
 
@@ -41,7 +41,7 @@ class clients
      */
     public static function put($id, $values)
     {
-        $res = \Models\Contacts::put($id, $values);
+        $res = \Models\Clients::put($id, $values);
         return $res;
     }
 
@@ -51,13 +51,13 @@ class clients
      */
     public static function post($values)
     {
-        $res = \Models\Contacts::post($values);
+        $res = \Models\Clients::post($values);
         return $res;
     }
 
     public static function delete($id)
     {
-        $res = \Models\Contacts::delete($id);
+        $res = \Models\Clients::delete($id);
         return $res;
     }
 }

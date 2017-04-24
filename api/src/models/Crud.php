@@ -51,11 +51,16 @@ abstract class Crud
         }
 
         // ".static::$sql_ownerid."
-        $sql = "INSERT INTO `".static::$tablename."` SET ".implode(',',$ins)."  ".static::$sql_insert_special.";";
+        $sql = "INSERT INTO `".static::$tablename."` SET ".implode(',',$ins)."  ,".static::$sql_insert_special.";";
 
         if (!count($ins)) {
             return false;
         }
+
+//        print_r($sql);
+//        print_r($id);
+//        print_r($values);
+//        print_r($ins);
 
         try {
             $pdo = \DB\connectDB::getPDO();
