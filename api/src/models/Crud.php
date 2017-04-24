@@ -16,12 +16,13 @@ abstract class Crud
     static $tablename = "table";
     static $idfield = "id";
     static $deletedfield = "deleted";
-    static $sql_insert_special = ",`created` = now()"; // ,`date_created` = now()
-    static $sql_update_special = ",`updated` = now()"; // ,`date_updated` = now()
-    static $sql_delete_special = ",`deleted` = now()"; // ,`date_deleted` = now()
+    static $sql_insert_special = "`created` = now()"; // ,`date_created` = now()
+    static $sql_update_special = "`updated` = now()"; // ,`date_updated` = now()
+    static $sql_delete_special = "`deleted` = now()"; // ,`date_deleted` = now()
     static $sql_ownerid = ", `id_user` = :id_user";
     static $pdo_connector = "defaultDB";
     static $fields = array();
+
 
 
     /**
@@ -88,16 +89,18 @@ abstract class Crud
         }
 
         /*".static::$sql_ownerid."*/
-        $sql = "UPDATE `".static::$tablename."` SET ".implode(',',$ins)." ".static::$sql_update_special." where ".static::$idfield." = :id ;";
+        $sql = "UPDATE `".static::$tablename."` SET ".implode(',',$ins)." ,".static::$sql_update_special." where ".static::$idfield." = :id ;";
+
+        // if this is a delete
+        if (isset($values['deleted'])) {
+            unset($ins['deleted']);
+            $sql = "UPDATE `".static::$tablename."` SET ".static::$sql_delete_special." where ".static::$idfield." = :id ;";
+        }
 
 //        print_r($sql);
 //        print_r($id);
 //        print_r($values);
 //        print_r($ins);
-
-        if (!count($ins)) {
-            return false;
-        }
 
         try {
             $pdo = \DB\connectDB::getPDO();
@@ -105,7 +108,7 @@ abstract class Crud
             $sth = $pdo->prepare($sql);
             foreach ($ins as $f => $k) {
                 $sth->bindValue(":".$f, $values[$f], self::guessType($values[$f]));
-//                echo $f . " ->" .$values[$f];
+//                 echo $f . " -> " .$values[$f];
             }
             $sth->bindValue(":id", $id, self::guessType($id));
             // $sth->bindValue(":id_user", \singletons\Me::getInstance()->user["id"], self::guessType(\singletons\Me::getInstance()->user["id"]));
@@ -117,13 +120,17 @@ abstract class Crud
                 return false;
             }
         } catch (\PDOException $e) {
-            // error_log(print_r($e, true));
+            print_r($e);
             return $e;
         }
 
     }
 
-
+    /**
+     * @param null $params
+     * @param null $fields
+     * @return array|\Exception|PDOException
+     */
     protected static function selectSimple($params = NULL, $fields = NULL) {
 //      error_log("-- selectSimple --");
 //      je verif les champs demandés

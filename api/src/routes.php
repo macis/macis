@@ -49,5 +49,10 @@ $app->group('/client', function () {
         $json = \macis\classes\clients::post($values);
         echo json_encode($json, JSON_PRETTY_PRINT);
     });
-
+    // Del client
+    $this->delete('/{id:[0-9]+}', function ($request, $response, $args) {
+        $id = $request->getAttribute('id');
+        $json = \macis\classes\clients::delete($id);
+        echo json_encode($json, JSON_PRETTY_PRINT);
+    });
 });

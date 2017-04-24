@@ -55,4 +55,9 @@ class clients
         return $res;
     }
 
+    public static function delete($id)
+    {
+        $res = \Models\Contacts::delete($id);
+        return $res;
+    }
 }

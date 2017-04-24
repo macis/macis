@@ -14,7 +14,7 @@ class Contacts extends Crud
 
     static $tablename = "contacts";
     static $idfield = "id";
-    static $deletedfield = "";
+    static $deletedfield = "deleted";
     static $fields = array(
         'id',
         'social_number',
@@ -155,5 +155,11 @@ class Contacts extends Crud
     public static function post($values) {
         $id = self::insert($values);
         return $id;
+    }
+
+    public static function delete($id) {
+        $values = array(self::$deletedfield => 'now()');
+        $list = self::update($id, $values);
+        return $list;
     }
 }
