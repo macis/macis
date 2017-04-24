@@ -1,26 +1,26 @@
-# Slim Framework 3 Skeleton Application
+# REST API for Macis CRM 
 
-Use this skeleton application to quickly setup and start working on a new Slim Framework 3 application. This application uses the latest Slim 3 with the PHP-View template renderer. It also uses the Monolog logger.
+This is the only entrypoint between database and the outside world
 
-This skeleton application was built for Composer. This makes setting up a new Slim Framework application quick and easy.
+## Usage
 
-## Install the Application
+### Database
 
-Run this command from the directory in which you want to install your new Slim Framework application.
+Database model is a .mwb designed to be used with mysql workbench, please create the database and import the model before anything else
 
-    php composer.phar create-project slim/slim-skeleton [my-app-name]
+### User creation
 
-Replace `[my-app-name]` with the desired directory name for your new application. You'll want to:
+You must create users manually into the database
 
-* Point your virtual host document root to your new application's `public/` directory.
-* Ensure `logs/` is web writeable.
+$user = "user";
 
-To run the application in development, you can also run this command. 
+$hash = password_hash("password", PASSWORD_DEFAULT);
 
-	php composer.phar start
+$status = $pdo->exec(
+    "INSERT INTO users (user, password) VALUES ('{$user}', '{$hash}')"
+);
 
-Run this command to run the test suite
+### Calls
 
-	php composer.phar test
+You must use the basic http authorization to authenticate with user and password with every request
 
-That's it! Now go build something cool.

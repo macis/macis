@@ -23,6 +23,10 @@
         <option name="key" value="Cache-Control" />
         <option name="value" value="no-cache" />
       </KeyValuePair>
+      <KeyValuePair>
+        <option name="key" value="Authorization" />
+        <option name="value" value="Basic cm9vdDp0MDBy" />
+      </KeyValuePair>
     </list>
   </option>
   <option name="parameters">

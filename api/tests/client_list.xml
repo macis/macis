@@ -10,9 +10,9 @@
       </Biscuit>
     </list>
   </option>
-  <option name="httpMethod" value="POST" />
+  <option name="httpMethod" value="GET" />
   <option name="urlBase" value="http://localhost:8080" />
-  <option name="urlPath" value="/client" />
+  <option name="urlPath" value="/clients" />
   <option name="headers">
     <list>
       <KeyValuePair>
@@ -30,15 +30,10 @@
     </list>
   </option>
   <option name="parameters">
-    <list>
-      <KeyValuePair>
-        <option name="key" value="" />
-        <option name="value" value="" />
-      </KeyValuePair>
-    </list>
+    <list />
   </option>
   <option name="parametersEnabled" value="true" />
-  <option name="haveTextToSend" value="true" />
+  <option name="haveTextToSend" value="false" />
   <option name="haveFileToSend" value="false" />
   <option name="isFileUpload" value="false" />
   <option name="textToSend" value="{  &quot;social_number&quot;: &quot;01000&quot;, &quot;lastname&quot;: &quot;test&quot;, &quot;birthname&quot;: &quot;toto3&quot;, &quot;firstname&quot;: &quot;test&quot;  }" />
