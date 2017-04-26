@@ -97,7 +97,7 @@ class Clients extends Crud
             $sql = "SELECT SQL_CALC_FOUND_ROWS ";
             // $sql .= " * "; //id, firstname, lastname, title
             $sql .= $fields;
-            $sql .= " FROM contacts ";
+            $sql .= " FROM ". self::$tablename." ";
             if (!empty($search)) {
                 $sql .= " WHERE MATCH(firstname,lastname) AGAINST (:search IN BOOLEAN MODE) ";
             }
