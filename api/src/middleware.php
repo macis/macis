@@ -19,5 +19,8 @@ $app->add(new \Slim\Middleware\HttpBasicAuthentication([
         $data["status"] = "error";
         $data["message"] = $arguments["message"];
         return $response->write(json_encode($data, JSON_UNESCAPED_SLASHES));
+    },
+    "callback" => function ($request, $response, $arguments) {
+        \macis\classes\users::login($arguments['user'], $arguments['password']);
     }
 ]));

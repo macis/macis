@@ -23,6 +23,7 @@ $app->group('/clients', function () {
         $page = (empty($page)) ? 0 : (int)$page;
         $search = $request->getAttribute('search');
         $json = \macis\classes\clients::search($page, $search);
+        $json['user'] = $_SESSION['user'];
         echo json_encode($json, JSON_PRETTY_PRINT);
     });
 });
@@ -31,7 +32,8 @@ $app->group('/client', function () {
     // Fiche client
     $this->get('/{id:[0-9]+}', function ($request, $response, $args) {
         $id = $request->getAttribute('id');
-        $json = \macis\classes\clients::get($id);
+        $json['client'] = \macis\classes\clients::get($id);
+        $json['user'] = $_SESSION['user'];
         echo json_encode($json, JSON_PRETTY_PRINT);
     });
     // Update client
@@ -39,20 +41,23 @@ $app->group('/client', function () {
         $id = $request->getAttribute('id');
         $values = $request->getBody();
         $values = json_decode($values, true);
-        $json = \macis\classes\clients::put($id, $values);
+        $json['client'] = \macis\classes\clients::put($id, $values);
+        $json['user'] = $_SESSION['user'];
         echo json_encode($json, JSON_PRETTY_PRINT);
     });
     // Add client
     $this->post('', function ($request, $response, $args) {
         $values = $request->getBody();
         $values = json_decode($values, true);
-        $json = \macis\classes\clients::post($values);
+        $json['client'] = \macis\classes\clients::post($values);
+        $json['user'] = $_SESSION['user'];
         echo json_encode($json, JSON_PRETTY_PRINT);
     });
     // Del client
     $this->delete('/{id:[0-9]+}', function ($request, $response, $args) {
         $id = $request->getAttribute('id');
-        $json = \macis\classes\clients::delete($id);
+        $json['client'] = \macis\classes\clients::delete($id);
+        $json['user'] = $_SESSION['user'];
         echo json_encode($json, JSON_PRETTY_PRINT);
     });
 });
