@@ -19,7 +19,7 @@ abstract class Crud
     static $sql_insert_special = "`created` = now()"; // ,`date_created` = now()
     static $sql_update_special = "`updated` = now()"; // ,`date_updated` = now()
     static $sql_delete_special = "`deleted` = now()"; // ,`date_deleted` = now()
-    static $sql_ownerid = ", `id_user` = :id_user";
+    static $sql_ownerid = "`id_user` = :id_user";
     static $pdo_connector = "defaultDB";
     static $fields = array();
 
@@ -50,8 +50,7 @@ abstract class Crud
             }
         }
 
-        // ".static::$sql_ownerid."
-        $sql = "INSERT INTO `".static::$tablename."` SET ".implode(',',$ins)."  ,".static::$sql_insert_special.";";
+        $sql = "INSERT INTO `".static::$tablename."` SET ".implode(',',$ins)."  ,".static::$sql_insert_special." ,".static::$sql_ownerid.";";
 
         if (!count($ins)) {
             return false;
@@ -69,7 +68,7 @@ abstract class Crud
             foreach ($ins as $f => $k) {
                 $sth->bindValue(":".$f, $values[$f], self::guessType($values[$f]));
             }
-            // $sth->bindValue(":id_user", \singletons\Me::getInstance()->user["id"], self::guessType(\singletons\Me::getInstance()->user["id"]));
+            $sth->bindValue(":id_organization", $_SESSION['user']["id_organization"], self::guessType($_SESSION['user']["id_organization"]));
 
             $sth->execute();
             $id = $pdo->lastInsertId();

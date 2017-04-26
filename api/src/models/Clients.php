@@ -15,6 +15,7 @@ class Clients extends Crud
     static $tablename = "clients";
     static $idfield = "id";
     static $deletedfield = "deleted";
+    static $sql_ownerid = "`id_organization` = :id_organization";
     static $fields = array(
         'id',
         'social_number',
@@ -98,8 +99,9 @@ class Clients extends Crud
             // $sql .= " * "; //id, firstname, lastname, title
             $sql .= $fields;
             $sql .= " FROM ". self::$tablename." ";
+            $sql .= " WHERE ". self::$sql_ownerid." ";
             if (!empty($search)) {
-                $sql .= " WHERE MATCH(firstname,lastname) AGAINST (:search IN BOOLEAN MODE) ";
+                $sql .= " AND MATCH(firstname,lastname) AGAINST (:search IN BOOLEAN MODE) ";
             }
             $sql .= " ORDER BY lastname ";
             $sql .= " LIMIT :start , :limit";
@@ -108,6 +110,8 @@ class Clients extends Crud
             $start = $page * $limit;
             $sth->bindParam(':start', $start, \PDO::PARAM_INT);
             $sth->bindParam(':limit', $limit, \PDO::PARAM_INT);
+            $sth->bindValue(":id_organization", $_SESSION['user']["id_organization"], \PDO::PARAM_INT);
+
             if (!empty($search)) {
                 $search = array_filter(explode(" ", $search));
                 array_walk($search, function (&$item) {
@@ -119,7 +123,7 @@ class Clients extends Crud
             }
             $sth->execute();
 
-            $res['list'] = $sth->fetchAll(\PDO::FETCH_ASSOC);
+            $res['clients'] = $sth->fetchAll(\PDO::FETCH_ASSOC);
         } catch( PDOException $Exception ) {
             echo "error";
             print_r($Exception);
