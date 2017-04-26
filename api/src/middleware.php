@@ -8,6 +8,7 @@ $app->add(new \Slim\Middleware\HttpBasicAuthentication([
     "path" => "/",
     "realm" => "Protected",
 
+    // perhaps the following need to be rewrited
     "authenticator" => new PdoAuthenticator([
         "pdo" => \DB\connectDB::getPDO(),
         "table" => "users",
