@@ -15,12 +15,11 @@ abstract class Crud
 {
     static $tablename = "table";
     static $idfield = "id";
-    static $deletedfield = "deleted";
     static $sql_insert_special = "`created` = now()"; // ,`date_created` = now()
     static $sql_update_special = "`updated` = now()"; // ,`date_updated` = now()
     static $sql_delete_special = "`deleted` = now()"; // ,`date_deleted` = now()
-    static $sql_ownerid = "`id_user` = :id_user";
-    static $pdo_connector = "defaultDB";
+    static $sql_owner_field = "id_user";
+    static $sql_owner_value = "10";
     static $fields = array();
 
 
@@ -32,8 +31,6 @@ abstract class Crud
         $list = self::selectSimple();
         return $list;
     }
-
-
 
     // Internal functions
 
@@ -50,25 +47,23 @@ abstract class Crud
             }
         }
 
-        $sql = "INSERT INTO `".static::$tablename."` SET ".implode(',',$ins)."  ,".static::$sql_insert_special." ,".static::$sql_ownerid.";";
+        $sql = "INSERT INTO `".static::$tablename."` SET ".implode(',',$ins)."  ,".static::$sql_insert_special." , `:sql_owner_field` = :sql_owner_value;";
 
         if (!count($ins)) {
             return false;
         }
 
-//        print_r($sql);
-//        print_r($id);
-//        print_r($values);
-//        print_r($ins);
-
         try {
             $pdo = \DB\connectDB::getPDO();
+
+            $sql = str_replace(":sql_owner_field",static::$sql_owner_field, $sql );
 
             $sth = $pdo->prepare($sql);
             foreach ($ins as $f => $k) {
                 $sth->bindValue(":".$f, $values[$f], self::guessType($values[$f]));
             }
-            $sth->bindValue(":id_organization", $_SESSION['user']["id_organization"], self::guessType($_SESSION['user']["id_organization"]));
+
+            $sth->bindValue(":sql_owner_value", static::$sql_owner_value, self::guessType(static::$sql_owner_value));
 
             $sth->execute();
             $id = $pdo->lastInsertId();

@@ -15,7 +15,8 @@ class Clients extends Crud
     static $tablename = "clients";
     static $idfield = "id";
     static $deletedfield = "deleted";
-    static $sql_ownerid = "`id_organization` = :id_organization";
+    static $sql_owner_field = "id_organization";
+    static $sql_owner_value = "10";
     static $fields = array(
         'id',
         'social_number',
@@ -69,6 +70,8 @@ class Clients extends Crud
      * @return mixed
      */
     public static function search($search, $page, $limit = 20, $fields = "") {
+        self::$sql_owner_value = $_SESSION['user']["id_organization"];
+
         $search = strtolower(iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $search));
         $pdo = \DB\connectDB::getPDO();
 
@@ -98,19 +101,25 @@ class Clients extends Crud
             $sql = "SELECT SQL_CALC_FOUND_ROWS ";
             // $sql .= " * "; //id, firstname, lastname, title
             $sql .= $fields;
-            $sql .= " FROM ". self::$tablename." ";
-            $sql .= " WHERE ". self::$sql_ownerid." ";
+            $sql .= " FROM :tablename ";
+            $sql .= " WHERE `id_organization` = :id_organization ";
             if (!empty($search)) {
                 $sql .= " AND MATCH(firstname,lastname) AGAINST (:search IN BOOLEAN MODE) ";
             }
             $sql .= " ORDER BY lastname ";
             $sql .= " LIMIT :start , :limit";
+
+            $sql = str_replace(":tablename",self::$tablename, $sql );
+
+
             $sth = $pdo->prepare($sql);
 
             $start = $page * $limit;
+
+            // binding
             $sth->bindParam(':start', $start, \PDO::PARAM_INT);
             $sth->bindParam(':limit', $limit, \PDO::PARAM_INT);
-            $sth->bindValue(":id_organization", $_SESSION['user']["id_organization"], \PDO::PARAM_INT);
+            $sth->bindValue(":id_organization", self::$sql_owner_value, \PDO::PARAM_INT);
 
             if (!empty($search)) {
                 $search = array_filter(explode(" ", $search));
@@ -121,12 +130,12 @@ class Clients extends Crud
 
                 $sth->bindParam(':search', $search, \PDO::PARAM_STR);
             }
+
             $sth->execute();
 
             $res['clients'] = $sth->fetchAll(\PDO::FETCH_ASSOC);
         } catch( PDOException $Exception ) {
             echo "error";
-            print_r($Exception);
         }
 
         try {
@@ -157,6 +166,7 @@ class Clients extends Crud
      * @return bool|\Exception|\PDOException|string
      */
     public static function post($values) {
+        self::$sql_owner_value = $_SESSION['user']["id_organization"];
         $id = self::insert($values);
         return $id;
     }
