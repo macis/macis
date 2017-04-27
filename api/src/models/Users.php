@@ -43,7 +43,6 @@ class Users extends Crud
             $_SESSION['user'] = $user[0];
         } catch (\PDOException $e) {
             $container->logger->debug("PDO ERROR". $e->getMessage(), $e->getTrace()) ;
-            die();
         }
     }
 

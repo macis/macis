@@ -47,7 +47,7 @@ abstract class Crud
             }
         }
 
-        $sql = "INSERT INTO `".static::$tablename."` SET ".implode(',',$ins)."  ,".static::$sql_insert_special." , `:sql_owner_field` = :sql_owner_value;";
+        $sql = "INSERT INTO `:tablename` SET ".implode(',',$ins)."  ,".static::$sql_insert_special." , `:sql_owner_field` = :sql_owner_value;";
 
         if (!count($ins)) {
             return false;
@@ -56,6 +56,7 @@ abstract class Crud
         try {
             $pdo = \DB\connectDB::getPDO();
 
+            $sql = str_replace(":tablename",self::$tablename, $sql );
             $sql = str_replace(":sql_owner_field",static::$sql_owner_field, $sql );
 
             $sth = $pdo->prepare($sql);
@@ -87,31 +88,30 @@ abstract class Crud
             }
         }
 
-        /*".static::$sql_ownerid."*/
-        $sql = "UPDATE `".static::$tablename."` SET ".implode(',',$ins)." ,".static::$sql_update_special." where ".static::$idfield." = :id ;";
+        $sql = "UPDATE `:tablename` SET ".implode(',',$ins)." ,".static::$sql_update_special." where :idfield = :id and `:sql_owner_field` = :sql_owner_value; ;";
 
         // if this is a delete
         if (isset($values['deleted'])) {
             unset($ins['deleted']);
-            $sql = "UPDATE `".static::$tablename."` SET ".static::$sql_delete_special." where ".static::$idfield." = :id ;";
+            $sql = "UPDATE `:tablename` SET ".static::$sql_delete_special." where :idfield = :id and `:sql_owner_field` = :sql_owner_value;;";
         }
 
-//        print_r($sql);
-//        print_r($id);
-//        print_r($values);
-//        print_r($ins);
 
         try {
             $pdo = \DB\connectDB::getPDO();
 
+            $sql = str_replace(":tablename",static::$tablename, $sql );
+            $sql = str_replace(":idfield",static::$idfield, $sql );
+            $sql = str_replace(":sql_owner_field",static::$sql_owner_field, $sql );
+
             $sth = $pdo->prepare($sql);
             foreach ($ins as $f => $k) {
                 $sth->bindValue(":".$f, $values[$f], self::guessType($values[$f]));
-//                 echo $f . " -> " .$values[$f];
             }
             $sth->bindValue(":id", $id, self::guessType($id));
-            // $sth->bindValue(":id_user", \singletons\Me::getInstance()->user["id"], self::guessType(\singletons\Me::getInstance()->user["id"]));
+            $sth->bindValue(":sql_owner_value", static::$sql_owner_value, self::guessType(static::$sql_owner_value));
             $sth->execute();
+
             $count = $sth->rowCount();
             if ($count >= 1) {
                 return true;
@@ -119,7 +119,6 @@ abstract class Crud
                 return false;
             }
         } catch (\PDOException $e) {
-            print_r($e);
             return $e;
         }
 
@@ -154,7 +153,7 @@ abstract class Crud
             }
         }
 
-        $sql = "SELECT ".implode(',',$select) ." FROM `".static::$tablename."`";
+        $sql = "SELECT ".implode(',',$select) ." FROM `:tablename`";
         if (count($where)) {
             $sql .= " WHERE ".implode(" AND ", $where);
         }
@@ -164,6 +163,9 @@ abstract class Crud
 
         try {
             $pdo = \DB\connectDB::getPDO();
+
+            $sql = str_replace(":tablename",static::$tablename, $sql );
+
             $sth = $pdo->prepare($sql);
             foreach ($where as $f => $k) {
                 $sth->bindValue(":".$f, $params[$f], self::guessType($params[$f]));

@@ -157,6 +157,7 @@ class Clients extends Crud
      * @return mixed
      */
     public static function put($id, $values) {
+        self::$sql_owner_value = $_SESSION['user']["id_organization"];
         $list = self::update($id, $values);
         return $list;
     }
@@ -176,6 +177,7 @@ class Clients extends Crud
      * @return bool|\Exception|\PDOException
      */
     public static function delete($id) {
+        self::$sql_owner_value = $_SESSION['user']["id_organization"];
         $values = array(self::$deletedfield => 'now()');
         $list = self::update($id, $values);
         return $list;
