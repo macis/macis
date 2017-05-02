@@ -88,12 +88,12 @@ abstract class Crud
             }
         }
 
-        $sql = "UPDATE `:tablename` SET ".implode(',',$ins)." ,".static::$sql_update_special." where :idfield = :id and `:sql_owner_field` = :sql_owner_value; ;";
+        $sql = "UPDATE `:tablename` SET :ins ,:sql_update_special where :idfield = :id and `:sql_owner_field` = :sql_owner_value; ;";
 
         // if this is a delete
         if (isset($values['deleted'])) {
             unset($ins['deleted']);
-            $sql = "UPDATE `:tablename` SET ".static::$sql_delete_special." where :idfield = :id and `:sql_owner_field` = :sql_owner_value;;";
+            $sql = "UPDATE `:tablename` SET :sql_delete_special where :idfield = :id and `:sql_owner_field` = :sql_owner_value;;";
         }
 
 
@@ -103,6 +103,9 @@ abstract class Crud
             $sql = str_replace(":tablename",static::$tablename, $sql );
             $sql = str_replace(":idfield",static::$idfield, $sql );
             $sql = str_replace(":sql_owner_field",static::$sql_owner_field, $sql );
+            $sql = str_replace(":sql_update_special",static::$sql_update_special, $sql );
+            $sql = str_replace(":sql_delete_special",static::$sql_delete_special, $sql );
+            $sql = str_replace(":ins",implode(',',$ins), $sql );
 
             $sth = $pdo->prepare($sql);
             foreach ($ins as $f => $k) {
@@ -153,9 +156,9 @@ abstract class Crud
             }
         }
 
-        $sql = "SELECT ".implode(',',$select) ." FROM `:tablename`";
+        $sql = "SELECT :select FROM `:tablename`";
         if (count($where)) {
-            $sql .= " WHERE ".implode(" AND ", $where);
+            $sql .= " WHERE :where";
         }
 
 //        error_log(print_r($sql, true));
@@ -164,7 +167,9 @@ abstract class Crud
         try {
             $pdo = \DB\connectDB::getPDO();
 
+            $sql = str_replace(":select",implode(',',$select), $sql );
             $sql = str_replace(":tablename",static::$tablename, $sql );
+            $sql = str_replace(":where",implode(" AND ", $where), $sql );
 
             $sth = $pdo->prepare($sql);
             foreach ($where as $f => $k) {
