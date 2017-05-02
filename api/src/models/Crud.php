@@ -133,7 +133,6 @@ abstract class Crud
      * @return array|\Exception|PDOException
      */
     protected static function selectSimple($params = NULL, $fields = NULL) {
-//      error_log("-- selectSimple --");
 //      je verif les champs demandés
         $select = array();
         if ($fields == NULL) {
@@ -161,9 +160,6 @@ abstract class Crud
             $sql .= " WHERE :where";
         }
 
-//        error_log(print_r($sql, true));
-//        error_log(print_r($params, true));
-
         try {
             $pdo = \DB\connectDB::getPDO();
 
@@ -178,7 +174,6 @@ abstract class Crud
 
             $sth->execute();
             $return = $sth->fetchAll(\PDO::FETCH_ASSOC);
-            // error_log(print_r($return, true));
             return $return ;
         } catch (\PDOException $e) {
             return $e;
