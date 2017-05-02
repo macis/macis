@@ -13,14 +13,13 @@ class connectDB
 {
     private static $pdo;
 
+    /**
+     * @return bool|\PDO
+     */
     public static function getPDO() {
 
-        // $config = Config::get();
         $config = require __DIR__ . '/../settings.php';
         $config = $config['settings'];
-
-//        print_r($config);die();
-        // if (!$config) { }
 
         try {
             self::$pdo = new \PDO(
@@ -29,7 +28,7 @@ class connectDB
                 $config['db']['pass']);
 
         } catch (\PDOException $e) {
-            print_r($e);
+            return false;
         }
 
         return self::$pdo;

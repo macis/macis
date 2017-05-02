@@ -1,15 +1,10 @@
 <?php
 // Routes
 
-//$app->get('/[{name}]', function ($request, $response, $args) {
-//    // Sample log message
-//    $this->logger->info("Slim-Skeleton '/' route");
-//
-//    // Render index view
-//    return $this->renderer->render($response, 'index.phtml', $args);
-//});
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
 
-$app->get('/hello/{name}', function ($request, $response) {
+$app->get('/hello/{name}', function (ServerRequestInterface $request, ResponseInterface $response) {
     $name = $request->getAttribute('name');
     $response->getBody()->write("Hello, $name");
 
@@ -18,7 +13,7 @@ $app->get('/hello/{name}', function ($request, $response) {
 
 // Clients
 $app->group('/clients', function () {
-    $this->get('[/{page:[0-9]+}[/{search}]]', function ($request, $response, $args) {
+    $this->get('[/{page:[0-9]+}[/{search}]]', function (ServerRequestInterface $request, ResponseInterface $response, $args) {
         $page = $request->getAttribute('page');
         $page = (empty($page)) ? 0 : (int)$page;
         $search = $request->getAttribute('search');
@@ -30,14 +25,14 @@ $app->group('/clients', function () {
 
 $app->group('/client', function () {
     // Fiche client
-    $this->get('/{id:[0-9]+}', function ($request, $response, $args) {
+    $this->get('/{id:[0-9]+}', function (ServerRequestInterface $request, ResponseInterface $response, $args) {
         $id = $request->getAttribute('id');
         $json['client'] = \macis\classes\clients::get($id);
         $json['user'] = $_SESSION['user'];
         echo json_encode($json, JSON_PRETTY_PRINT);
     });
     // Update client
-    $this->put('/{id:[0-9]+}', function ($request, $response, $args) {
+    $this->put('/{id:[0-9]+}', function (ServerRequestInterface $request, ResponseInterface $response, $args) {
         $id = $request->getAttribute('id');
         $values = $request->getBody();
         $values = json_decode($values, true);
@@ -46,7 +41,7 @@ $app->group('/client', function () {
         echo json_encode($json, JSON_PRETTY_PRINT);
     });
     // Add client
-    $this->post('', function ($request, $response, $args) {
+    $this->post('', function (ServerRequestInterface $request, ResponseInterface $response, $args) {
         $values = $request->getBody();
         $values = json_decode($values, true);
         $json['client'] = \macis\classes\clients::post($values);
@@ -54,7 +49,7 @@ $app->group('/client', function () {
         echo json_encode($json, JSON_PRETTY_PRINT);
     });
     // Del client
-    $this->delete('/{id:[0-9]+}', function ($request, $response, $args) {
+    $this->delete('/{id:[0-9]+}', function (ServerRequestInterface $request, ResponseInterface $response, $args) {
         $id = $request->getAttribute('id');
         $json['client'] = \macis\classes\clients::delete($id);
         $json['user'] = $_SESSION['user'];
