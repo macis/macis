@@ -146,7 +146,6 @@ class Clients extends Crud
             $res['count'] = $sth->fetch()['nb'];
         } catch( PDOException $Exception ) {
             echo "error";
-            print_r($Exception);
         }
         return $res;
     }
