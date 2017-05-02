@@ -29,7 +29,8 @@ class connectDB
                 $config['db']['pass']);
 
         } catch (\PDOException $e) {
-            print_r($e);
+            // print_r($e);
+            return false; 
         }
 
         return self::$pdo;
