@@ -46,5 +46,4 @@ class Users extends Crud
         }
     }
 
-
 }
